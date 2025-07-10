@@ -19,13 +19,13 @@ import time
 from threading import Thread, Lock
 from queue import Queue
 
-# Load tokens and proxies
+
 tokens = [line.strip() for line in open("tokens.txt") if line.strip()]
 proxies = [line.strip() for line in open("proxies.txt") if line.strip()]
 
 os.makedirs("output", exist_ok=True)
 
-# Ask how many threads to run
+
 try:
     threads_count = int(input("\033[1;96mHow many threads do you want to run? ➔ \033[0m"))
 except ValueError:
@@ -54,7 +54,7 @@ def get_proxy():
         }
 
 def extract_token(line: str):
-    # Extract token from line like email:pass:token or token|extra
+    
     if "@" in line and ":" in line:
         parts = line.split(":")
         token_part = parts[-1]
@@ -110,7 +110,7 @@ def check_payment_method(full_line: str):
                             print(f"\033[1;90m{now()} » {color}{brand} \033[1;91m• INVALID \033[1;97m➔ {color}[{brand} - ****{last_4}]\033[1;97m ➔ {color}[{token[:30]}...]\033[0m")
 
                         with open(f"output/{brand.lower()}.txt", "a") as f:
-                            f.write(full_line + "\n")  # Save full original line
+                            f.write(full_line + "\n") 
 
             if not has_card:
                 with lock:
@@ -138,18 +138,18 @@ def worker():
         finally:
             queue.task_done()
 
-# Enqueue tokens
+
 for token in tokens:
     queue.put(token)
 
-# Start threads
+
 threads = []
 for _ in range(threads_count):
     t = Thread(target=worker)
     t.start()
     threads.append(t)
 
-# Wait for all to finish
+
 for t in threads:
     t.join()
 
